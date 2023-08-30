@@ -1,0 +1,8 @@
+---
+- name: Install basic common packages
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - acl
+      - net-tools
+      - vim
