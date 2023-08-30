@@ -42,7 +42,7 @@ jobs:
           ANSIBLE_VAULT_KEY: op://infra-fands/Ansible vault key/password
 
       - name: Restore ansible vault password
-        run: echo ${{ ANSIBLE_VAULT_KEY }} > .vault-key
+        run: echo ${{ env.ANSIBLE_VAULT_KEY }} > .vault-key
 
       - name: Run the lint
         run: |
@@ -78,12 +78,12 @@ jobs:
           DEPLOY_KEY: op://infra-fands/Infra deploy SSH Key/private key?ssh-format=openssh
 
       - name: Restore ansible vault password
-        run: echo ${{ ANSIBLE_VAULT_KEY }} > .vault-key
+        run: echo ${{ env.ANSIBLE_VAULT_KEY }} > .vault-key
 
       - name: Install ssh keys
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ DEPLOY_KEY }}
+          ssh-private-key: ${{ env.DEPLOY_KEY }}
 
       - name: Run the playbook
         run: |
