@@ -6,10 +6,10 @@ install:
 	ansible-galaxy install -r requirements.yml
 
 lint-yml:
-	@yamllint -s $(YML_FILES) && echo "Yaml linting ok"
+	@yamllint --strict $(YML_FILES) && echo "Yaml linting ok"
 
 lint: lint-yml
-	ansible-lint
+	ansible-lint --format pep8 --offline
 
 echo:
 	echo $(YML_FILES)
