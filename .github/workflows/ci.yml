@@ -33,9 +33,16 @@ jobs:
           pip install -r requirements.txt
           ansible-galaxy install -r requirements.yml
 
+      - name: Load secrets
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          ANSIBLE_VAULT_KEY: op://infra-fands/Ansible vault key/password
 
       - name: Restore ansible vault password
-        run: echo ${{ secrets.ANSIBLE_VAULT_KEY }} > .vault-key
+        run: echo ${{ ANSIBLE_VAULT_KEY }} > .vault-key
 
       - name: Run the lint
         run: |
@@ -61,13 +68,22 @@ jobs:
           key: v2-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.yml') }}
           fail-on-cache-miss: true
 
+      - name: Load secrets
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          ANSIBLE_VAULT_KEY: op://infra-fands/Ansible vault key/password
+          DEPLOY_KEY: op://infra-fands/Infra deploy SSH Key/private key?ssh-format=openssh
+
       - name: Restore ansible vault password
-        run: echo ${{ secrets.ANSIBLE_VAULT_KEY }} > .vault-key
+        run: echo ${{ ANSIBLE_VAULT_KEY }} > .vault-key
 
       - name: Install ssh keys
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-private-key: ${{ DEPLOY_KEY }}
 
       - name: Run the playbook
         run: |
