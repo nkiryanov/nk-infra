@@ -11,3 +11,6 @@ ssh_accounts:
 
   - username: nkiryanov
     key: https://github.com/nkiryanov.keys
+
+  - username: infra
+    key: "{{ lookup('file', 'keys/infra.pub') }}"
