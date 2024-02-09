@@ -1,14 +1,5 @@
 ---
 ssh_accounts:
-  - username: f213
-    key: https://github.com/f213.keys
-
-  - username: samat
-    key: https://github.com/gsamat.keys
-
-  - username: kazqvaizer
-    key: https://github.com/kazqvaizer.keys
-
   - username: nkiryanov
     key: https://github.com/nkiryanov.keys
 
