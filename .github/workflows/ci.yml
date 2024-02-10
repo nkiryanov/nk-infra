@@ -10,12 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         id: setup-python
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: deps-cache
         with:
           path: |
@@ -39,7 +39,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          ANSIBLE_VAULT_KEY: op://infra-fands/Ansible vault key/password
+          ANSIBLE_VAULT_KEY: "op://nk infrastructure/nk infra ansible vault key/key"
 
       - name: Restore ansible vault password
         run: echo ${{ env.ANSIBLE_VAULT_KEY }} > .vault-key
@@ -54,11 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
 
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         id: deps-cache
         with:
           path: |
@@ -74,14 +74,14 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          ANSIBLE_VAULT_KEY: op://infra-fands/Ansible vault key/password
-          DEPLOY_KEY: op://infra-fands/Infra deploy SSH Key/private key?ssh-format=openssh
+          ANSIBLE_VAULT_KEY: "op://nk infrastructure/nk infra ansible vault key/key"
+          DEPLOY_KEY: "op://nk infrastructure/infra ssh key/private key"
 
       - name: Restore ansible vault password
         run: echo ${{ env.ANSIBLE_VAULT_KEY }} > .vault-key
 
       - name: Install ssh keys
-        uses: webfactory/ssh-agent@v0.7.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ env.DEPLOY_KEY }}
 
