@@ -1,0 +1,36 @@
+---
+- name: Make sure stack directory is present
+  ansible.builtin.file:
+    path: /srv/app-site
+    state: directory
+
+- name: Make sure cloudflare network is up
+  community.docker.docker_network:
+    name: cloudflarenet
+    driver: overlay
+
+- name: Deploy the app-site stack
+  community.docker.docker_stack:
+    name: app-site
+    resolve_image: never
+    with_registry_auth: true
+    compose:
+      - version: "3.8"
+
+        services:
+          cloudflared:
+            image: cloudflare/cloudflared:2024.2.0
+            command: "tunnel --no-autoupdate run --token {{ secrets.cloudflare.tunnel_token }}"
+            networks:
+              - cloudflarenet
+
+          periodic-prune:
+            image: f213/periodic-docker-prune:1.1.1
+            deploy:
+              mode: global
+            volumes:
+              - /var/run/docker.sock:/var/run/docker.sock
+
+        networks:
+          cloudflarenet:
+            external: true

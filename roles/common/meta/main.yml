@@ -4,6 +4,7 @@ dependencies:
     vars:
       swap_file_size_mb: 2048
       swap_swappiness: 5
+
   - role: geerlingguy.security
     vars:
       security_ssh_permit_root_login: "no"

@@ -4,4 +4,19 @@
   roles:
     - common
   vars_files:
+    - vars/main.yml
     - vars/ssh_accounts.yml
+
+- name: Install docker to the servers
+  hosts: all
+  roles:
+    - docker
+
+- name: Configure swarm manager
+  hosts: managers
+  vars_files:
+    - vars/main.yml
+    - vars/secrets.yml
+  roles:
+    - role: swarm_manager
+      tags: swarm

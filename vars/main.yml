@@ -1,0 +1,5 @@
+---
+public:
+  vlan: 10.16.1.0/24
+
+  swarm_manager_address: 10.16.1.5
