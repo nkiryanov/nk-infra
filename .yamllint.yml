@@ -1,5 +1,11 @@
 ---
 extends: default
+
+ignore:
+  - venv/
+  - mitogen/
+  - vars/secrets.yml
+
 rules:
   line-length:
     max: 120
