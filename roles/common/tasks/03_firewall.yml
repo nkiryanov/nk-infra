@@ -10,7 +10,7 @@
     rule: allow
     src: '{{ item }}'
   loop:
-    - "{{ public.vlan }}"
+    - "{{ vlan }}"
 
 - name: Deny all
   community.general.ufw:

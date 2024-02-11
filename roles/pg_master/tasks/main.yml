@@ -1,0 +1,5 @@
+---
+- name: Install and configure postgres
+  ansible.builtin.include_tasks: 00_install.yml
+- name: Configure postgres accounts
+  ansible.builtin.include_tasks: 01_accounts.yml

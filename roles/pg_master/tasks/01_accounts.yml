@@ -1,0 +1,18 @@
+---
+- name: Create databases
+  community.postgresql.postgresql_db:
+    name: "{{ credentials.app.postgresql.database }}"
+
+- name: Create app account
+  community.postgresql.postgresql_user:
+    name: "{{ credentials.app.postgresql.user }}"
+    password: "{{ credentials.app.postgresql.password }}"
+
+- name: Grant access to app account
+  community.postgresql.postgresql_privs:
+    role: "{{ credentials.app.postgresql.user }}"
+    db: "{{ credentials.app.postgresql.database }}"
+    privs: "ALL"
+    type: "schema"
+    objs: "public"
+    grant_option: false
