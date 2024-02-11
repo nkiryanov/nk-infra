@@ -4,6 +4,7 @@ extends: default
 ignore:
   - venv/
   - mitogen/
+  - vars/credentials.yml
   - vars/secrets.yml
 
 rules:

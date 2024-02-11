@@ -1,5 +1,7 @@
 ---
-public:
-  vlan: 10.16.1.0/24
+vlan: 10.16.1.0/24
 
-  swarm_manager_address: 10.16.1.5
+postgresql_address: 10.16.1.2
+postgresql_port: 5432
+
+swarm_manager_address: 10.16.1.5

@@ -1,19 +1,23 @@
 ---
 - name: Common configuration
   hosts: all
-  roles:
-    - role: common
-      tags: common
   vars_files:
     - vars/main.yml
     - vars/ssh_accounts.yml
-
-- name: Install docker to the servers
-  hosts: all
   roles:
-    - docker
+    - role: common
+      tags: common
 
-- name: Configure swarm manager
+- name: Postgresql
+  hosts: db
+  vars_files:
+    - vars/main.yml
+    - vars/credentials.yml
+  roles:
+    - role: pg_master
+      tags: postgresql
+
+- name: Swarm managers
   hosts: managers
   vars_files:
     - vars/main.yml

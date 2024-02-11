@@ -2,8 +2,8 @@
 - name: Make sure swarm is initialized
   community.docker.docker_swarm:
     state: present
-    advertise_addr: "{{ public.swarm_manager_address }}"
-    listen_addr: "{{ public.swarm_manager_address }}"
+    advertise_addr: "{{ swarm_manager_address }}"
+    listen_addr: "{{ swarm_manager_address }}"
 
 - name: Get swarm info
   community.docker.docker_swarm_info:
