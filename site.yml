@@ -12,7 +12,7 @@
   hosts: db
   vars_files:
     - vars/main.yml
-    - vars/credentials.yml
+    - vars/secrets.yml
   roles:
     - role: pg_master
       tags: postgresql
