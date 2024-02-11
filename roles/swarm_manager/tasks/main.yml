@@ -8,6 +8,6 @@
   ansible.builtin.include_tasks: "stacks/{{ stack }}.yml"
   loop:
     - site-infra
-    - hello-world
+    - app
   loop_control:
     loop_var: stack
