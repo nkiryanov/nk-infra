@@ -4,14 +4,6 @@
     path: /srv/site-infra
     state: directory
 
-- name: Make sure cloudflare network is up
-  community.docker.docker_network:
-    name: cloudflarenet
-    driver: overlay
-    # https://www.reddit.com/r/portainer/comments/qt1mne/swarm_deployment_woes/
-    driver_options:
-      com.docker.network.driver.mtu: 1450
-
 - name: Deploy the site infra stack
   community.docker.docker_stack:
     name: site-infra
@@ -20,17 +12,7 @@
     compose:
       - version: "3.8"
 
-        networks:
-          cloudflarenet:
-            external: true
-
         services:
-          cloudflared:
-            image: cloudflare/cloudflared:2024.2.0
-            command: "tunnel --no-autoupdate run --token {{ secrets.cloudflare.tunnel_token }}"
-            networks:
-              - cloudflarenet
-
           periodic-prune:
             image: f213/periodic-docker-prune:1.1.1
             deploy:

@@ -1,0 +1,73 @@
+---
+- name: Make sure stack directory is present
+  ansible.builtin.file:
+    path: /srv/cloudflared
+    state: directory
+
+- name: Deploy cloudflared tunnel secrets
+  ansible.builtin.copy:
+    src: "keys/{{ item }}"
+    dest: "/srv/cloudflared/{{ item }}"
+    mode: "0644"
+  loop:
+    - cloudflared_cert.pem
+    - cloudflared_tunnel_credentials.json
+
+- name: Deploy cloudflared tunnel config
+  ansible.builtin.template:
+    src: templates/cloudflared_tunnel_config.yml
+    dest: /srv/cloudflared/config.yml
+    mode: "0644"
+
+- name: Deploy docker secrets
+  community.docker.docker_secret:
+    name: "{{ item }}"
+    data_src: "/srv/cloudflared/{{ item }}"
+  loop:
+    - cloudflared_cert.pem
+    - cloudflared_tunnel_credentials.json
+
+- name: Make sure cloudflare network is up
+  community.docker.docker_network:
+    name: cloudflarenet
+    driver: overlay
+    # https://www.reddit.com/r/portainer/comments/qt1mne/swarm_deployment_woes/
+    driver_options:
+      com.docker.network.driver.mtu: 1450
+
+- name: Deploy the cloudflared stack
+  community.docker.docker_stack:
+    name: cloudflared
+    resolve_image: never
+    with_registry_auth: true
+    compose:
+      - version: "3.8"
+
+        networks:
+          cloudflarenet:
+            external: true
+
+        secrets:
+          cloudflared_cert.pem:
+            external: true
+          cloudflared_tunnel_credentials.json:
+            external: true
+
+        services:
+          cloudflared:
+            image: cloudflare/cloudflared:latest
+            secrets:
+              - source: cloudflared_cert.pem
+                target: /home/nonroot/.cloudflared/cert.pem
+              - source: cloudflared_tunnel_credentials.json
+                target: /home/nonroot/.cloudflared/tunnel_credentials.json
+            networks:
+              - cloudflarenet
+            volumes:
+              - /srv/cloudflared/config.yml:/home/nonroot/.cloudflared/config.yml
+
+            command: >-
+              tunnel
+              --no-autoupdate
+              run
+              {{ secrets.cloudflare.tunnel.id }}

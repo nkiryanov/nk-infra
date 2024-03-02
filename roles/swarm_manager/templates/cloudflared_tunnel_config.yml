@@ -1,0 +1,9 @@
+---
+tunnel: {{ secrets.cloudflare.tunnel.id }}
+credentials-file: /home/nonroot/.cloudflared/tunnel_credentials.json
+
+ingress:
+  - hostname: {{ secrets.backend_app_server }} 
+    service: http://hello_world_backend:80
+
+  - service: http_status:404

@@ -8,15 +8,6 @@
     - role: common
       tags: common
 
-- name: Postgresql
-  hosts: db
-  vars_files:
-    - vars/main.yml
-    - vars/secrets.yml
-  roles:
-    - role: pg_master
-      tags: postgresql
-
 - name: Swarm managers
   hosts: managers
   vars_files:
