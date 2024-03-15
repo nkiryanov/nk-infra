@@ -1,0 +1,4 @@
+listeners.tcp.local = 127.0.0.1:5672
+listeners.tcp.cluster = {{ secrets.rabbitmq_host }}:{{ secrets.rabbitmq_port }}
+
+management.path_prefix = /tech/rabbitmq
