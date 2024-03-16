@@ -1,0 +1,4 @@
+---
+stack_directory: stacks/ru
+active_stacks:
+  - site-infra

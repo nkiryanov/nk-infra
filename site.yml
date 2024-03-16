@@ -8,20 +8,24 @@
     - role: common
       tags: common
 
-- name: RabbitMQ test
-  hosts: managers
+- name: Ru swarm cluster
+  hosts: ru_swarm
   vars_files:
     - vars/main.yml
     - vars/secrets.yml
   roles:
-    - role: rabbitmq_server
-      tags: rabbitmq
+    - role: swarm
+      tags:
+        - swarm
+        - ru_swarm
 
-# - name: Swarm managers
-#   hosts: managers
-#   vars_files:
-#     - vars/main.yml
-#     - vars/secrets.yml
-#   roles:
-#     - role: swarm_manager
-#       tags: swarm
+- name: En swarm cluster
+  hosts: en_swarm
+  vars_files:
+    - vars/main.yml
+    - vars/secrets.yml
+  roles:
+    - role: swarm
+      tags:
+        - swarm
+        - en_swarm

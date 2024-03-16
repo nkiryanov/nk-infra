@@ -1,5 +1,6 @@
 ---
 - name: Create CI user
+  when: inventory_hostname == main_manager_node
   ansible.builtin.user:
     name: ci
     groups:
@@ -7,19 +8,20 @@
       - docker
 
 - name: Configure CI key
+  when: inventory_hostname == main_manager_node
   ansible.posix.authorized_key:
     user: ci
     exclusive: true
     key: "{{ lookup('file', 'keys/ci.pub') }}"
 
 - name: Make sure users are able to access docker registry
+  when: inventory_hostname == main_manager_node
   become: true
   become_user: "{{ item }}"
   community.docker.docker_login:
     registry_url: ghcr.io
     username: "{{ secrets.ghcr.login }}"
     password: "{{ secrets.ghcr.token }}"
-
   loop:
     - ci
     - root

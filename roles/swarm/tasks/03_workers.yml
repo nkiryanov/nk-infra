@@ -1,0 +1,18 @@
+---
+- name: Get swarm facts from the swarm manager
+  delegate_to: "{{ main_manager_node }}"
+  community.docker.docker_swarm_info:
+  register: swarm
+
+- name: Join the worker to swarm
+  community.docker.docker_swarm:
+    state: join
+    join_token: "{{ swarm.swarm_facts.JoinTokens.Worker }}"
+    remote_addrs:
+      - "{{ swarm_manager_address }}"
+
+- name: Log in to the container registry
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: "{{ secrets.ghcr.login }}"
+    password: "{{ secrets.ghcr.token }}"

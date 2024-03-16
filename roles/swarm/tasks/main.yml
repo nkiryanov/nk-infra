@@ -1,0 +1,19 @@
+---
+- name: Set main manager node fact
+  ansible.builtin.include_tasks: 00_main_manager_fact.yml
+
+- name: Configure docker swarm
+  ansible.builtin.include_tasks: 01_swarm_init.yml
+
+- name: Configure CI access to the manager node
+  ansible.builtin.include_tasks: 02_ci.yml
+
+- name: Join workers to the swarm
+  ansible.builtin.include_tasks: 03_workers.yml
+
+- name: Configure swarm stacks
+  when: inventory_hostname == main_manager_node
+  ansible.builtin.include_tasks: "{{ stack_directory }}/{{ stack }}.yml"
+  loop: "{{ active_stacks }}"
+  loop_control:
+    loop_var: stack

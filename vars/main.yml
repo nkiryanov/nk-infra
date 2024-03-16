@@ -4,4 +4,4 @@ vlan: 10.16.1.0/24
 postgresql_address: 10.16.1.2
 postgresql_port: 5432
 
-swarm_manager_address: 10.16.1.5
+# swarm_manager_address: 10.16.1.5

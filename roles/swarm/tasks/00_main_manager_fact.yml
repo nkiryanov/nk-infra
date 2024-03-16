@@ -1,0 +1,6 @@
+---
+# Main manager node is used to initialize the swarm cluster
+# Should be the first node listed in playbooks hosts
+- name: Set main manger node fact
+  ansible.builtin.set_fact:
+    main_manager_node: "{{ ansible_play_hosts[0] }}"

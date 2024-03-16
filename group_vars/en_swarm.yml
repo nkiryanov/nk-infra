@@ -1,0 +1,4 @@
+---
+stack_directory: stacks/en
+active_stacks:
+  - site-infra

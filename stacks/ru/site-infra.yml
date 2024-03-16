@@ -1,0 +1,21 @@
+---
+- name: Make sure stack directory is present
+  ansible.builtin.file:
+    path: /srv/site-infra
+    state: directory
+
+- name: Deploy the site infra stack
+  community.docker.docker_stack:
+    name: site-infra
+    resolve_image: never
+    with_registry_auth: true
+    compose:
+      - version: "3.8"
+
+        services:
+          periodic-prune:
+            image: f213/periodic-docker-prune:1.1.1
+            deploy:
+              mode: global
+            volumes:
+              - /var/run/docker.sock:/var/run/docker.sock
