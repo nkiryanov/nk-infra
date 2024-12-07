@@ -19,4 +19,4 @@ lint: lint-yml .uv
 
 .PHONY:  ## Just to check what .yml files are being linted
 echo:
-	echo $(YML_FILES)
+	@$(foreach val, $(YML_FILES), echo $(val);)

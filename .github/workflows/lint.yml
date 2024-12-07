@@ -1,0 +1,29 @@
+---
+name: Lint
+on:  # yamllint disable-line
+  pull_request:
+
+  # Ansible configured to use .vault-key. Pass it, otherwise ansible-lint will fail (used in linting)
+  workflow_call:
+    secrets:
+      ANSIBLE_VAULT_KEY:
+        required: true
+
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup project
+        uses: ./.github/actions/setup-project
+
+      - name: Restore ansible vault password
+        run: echo ${{ secrets.ANSIBLE_VAULT_KEY }} > .vault-key
+
+      - name: Run linters
+        run: make lint
