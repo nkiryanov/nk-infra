@@ -4,9 +4,3 @@ roles:
     version: 1.0.2
   - name: geerlingguy.security
     version: 2.2.0
-
-collections:
-  - community.general
-  - community.docker
-  - community.mysql
-  - community.crypto

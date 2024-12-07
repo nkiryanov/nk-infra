@@ -1,0 +1,11 @@
+---
+- name: Set inventory_hostname as hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Add hostname to /etc/hosts
+  ansible.builtin.lineinfile:
+    state: present
+    path: /etc/hosts
+    search_string: "127.0.2.1"  # most likely an unused valid host address
+    line: "127.0.2.1 {{ inventory_hostname }}"
