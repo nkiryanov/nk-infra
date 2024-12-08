@@ -34,14 +34,14 @@
 
           traefik:
             image: traefik:v3.2.1
-            ports:
-              - "80:80"
             command:
-              - "--log.level=DEBUG"
-              - "--api.insecure=true"
-              - "--providers.swarm=true"
+              - "--log.level=INFO"
+              - "--accesslog=true"
+              - "--api.dashboard=true"
               - "--providers.swarm.exposedByDefault=false"
-              - "--entryPoints.web.address=:80"
+              - "--providers.swarm.network=traefiknet"
+              - "--providers.swarm=true"
+              - "--entrypoints.web.address=:80"
             ports:
               - "80:80"
               - "8080:8080"
