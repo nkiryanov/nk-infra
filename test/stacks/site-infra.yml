@@ -1,4 +1,33 @@
 ---
+- name: Make sure stack directory exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /srv/site-infra
+    - /srv/site-infra/traefik
+    - /srv/site-infra/traefik/certs
+
+- name: Deploy traefik startup and dynamic configs
+  ansible.builtin.copy:
+    src: "templates/{{ item }}"
+    dest: "/srv/site-infra/traefik/{{ item }}"
+    mode: "0644"
+  loop:
+    - traefik.yml
+    - traefik-dynamic-configuration.yml
+
+- name: Deploy Cloudflare origin server cert
+  ansible.builtin.copy:
+    src: "../keys/{{ item.src_name }}"
+    dest: "/srv/site-infra/traefik/certs/{{ item.dst_name }}"
+    mode: "0600"
+  loop:
+    - src_name: cloudflare-origin-server.cert
+      dst_name: origin-server.cert
+    - src_name: cloudflare-origin-server.key
+      dst_name: origin-server.key
+
 - name: Make sure ingress networks exists
   community.docker.docker_network:
     name: "{{ item }}"
@@ -34,19 +63,15 @@
 
           traefik:
             image: traefik:v3.2.1
-            command:
-              - "--log.level=INFO"
-              - "--accesslog=true"
-              - "--api.dashboard=true"
-              - "--providers.swarm.exposedByDefault=false"
-              - "--providers.swarm.network=traefiknet"
-              - "--providers.swarm=true"
-              - "--entrypoints.web.address=:80"
             ports:
               - "80:80"
+              - "443:443"
               - "8080:8080"
             volumes:
               - /var/run/docker.sock:/var/run/docker.sock:ro
+              - /srv/site-infra/traefik/traefik.yml:/traefik.yml
+              - /srv/site-infra/traefik/traefik-dynamic-configuration.yml:/traefik-dynamic-configuration.yml
+              - /srv/site-infra/traefik/certs:/certs/
             networks:
               - traefiknet
 

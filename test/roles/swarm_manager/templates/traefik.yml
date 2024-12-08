@@ -1,0 +1,31 @@
+---
+log:
+  level: DEBUG
+
+accessLog: {}
+
+# Should be restricted (or removed) in production
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  swarm:
+    exposedByDefault: false
+    network: traefiknet
+  file:
+    filename: /traefik-dynamic-configuration.yml
+    watch: true
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: ":443"
+    asDefault: true

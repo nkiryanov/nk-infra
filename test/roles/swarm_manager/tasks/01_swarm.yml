@@ -20,11 +20,3 @@
     registry_url: ghcr.io
     username: "{{ secrets.ghcr.login }}"
     password: "{{ secrets.ghcr.token }}"
-
-- name: Make sure /srv/env directory exists
-  ansible.builtin.file:
-    path: /srv/env
-    state: directory
-    owner: root
-    group: root
-    mode: "0750"
