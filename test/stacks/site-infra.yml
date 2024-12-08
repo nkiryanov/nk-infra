@@ -37,6 +37,7 @@
             ports:
               - "80:80"
             command:
+              - "--log.level=DEBUG"
               - "--api.insecure=true"
               - "--providers.swarm=true"
               - "--providers.swarm.exposedByDefault=false"

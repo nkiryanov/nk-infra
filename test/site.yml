@@ -29,12 +29,3 @@
   roles:
     - role: swarm_manager
       tags: swarm
-
-
-- name: Hello world with ansible
-  hosts:
-    - all
-  tasks:
-    - name: Hello, test world
-      ansible.builtin.debug:
-        msg: "Hello, test world"
