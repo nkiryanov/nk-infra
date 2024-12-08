@@ -1,0 +1,26 @@
+---
+- name: Deploy the backend stack
+  docker_stack:
+    name: backend
+    resolve_image: never
+    with_registry_auth: true
+    prune: true
+    compose:
+      - version: "3.8"
+
+        networks:
+          cloudflarenet:
+            external: true
+          traefiknet:
+            external: true
+
+        services:
+          whoami:
+            image: traefik/whoami
+            networks:
+              - traefiknet
+              - cloudflarenet
+            labels:
+              - "traefik.enable=true"
+              - "traefik.http.routers.whoami.rule=Host(`whoami.nkiryanov.com`)"
+              - "traefik.http.routers.whoami.entrypoints=web"

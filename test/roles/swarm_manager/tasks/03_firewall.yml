@@ -1,0 +1,16 @@
+---
+# Allow all access from the Swarm subnet.
+# Necessary for services on the same node and IP as the Swarm manager cause in that case traffic not routed through VM vlan.
+- name: Gather Swarm bridge network info
+  community.docker.docker_network_info:
+    name: docker_gwbridge
+  register: docker_gwbridge_info
+
+- name: Set Swarm bridge network subnet
+  ansible.builtin.set_fact:
+    swarm_bridge_subnet: "{{ docker_gwbridge_info.network.IPAM.Config.0.Subnet }}"
+
+- name: Allow all access from swarm subnet
+  community.general.ufw:
+    rule: allow
+    src: "{{ swarm_bridge_subnet }}"

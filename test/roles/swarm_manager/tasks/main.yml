@@ -1,0 +1,15 @@
+---
+- name: Configure docker swarm manager
+  ansible.builtin.include_tasks: 01_swarm.yml
+
+- name: Configure CI access
+  ansible.builtin.include_tasks: 02_ci.yml
+
+- name: Set firewall rule to allow traffic from Swarm network
+  ansible.builtin.include_tasks: 03_firewall.yml
+
+- name: Configure swarm stacks
+  ansible.builtin.include_tasks: "stacks/{{ stack }}.yml"
+  loop: "{{ stacks }}"
+  loop_control:
+    loop_var: stack
