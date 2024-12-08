@@ -9,10 +9,23 @@
       tags: common
 
 
-- name: Hello world with ansible
+- name: Install docker
   hosts:
-    - all
-  tasks:
-    - name: Hello, test world
-      ansible.builtin.debug:
-        msg: "Hello, test world"
+    - nk-test-manager-1
+  roles:
+    - role: docker
+      tags: docker
+
+
+- name: Set swarm manager
+  hosts:
+    - nk-test-manager-1
+  vars_files:
+    - vars/vault.yml
+  vars:
+    stacks:
+      - site-infra
+      - backend
+  roles:
+    - role: swarm_manager
+      tags: swarm

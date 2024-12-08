@@ -1,0 +1,6 @@
+---
+# Dynamic configuration: could be changed and take effect without restarting the traefik container
+tls:
+  certificates:
+    - certFile: /certs/origin-server.cert
+      keyFile: /certs/origin-server.key

@@ -1,0 +1,29 @@
+---
+- name: Add docker dep822 repo
+  ansible.builtin.deb822_repository:
+    name: Docker
+    types: deb
+    uris: https://download.docker.com/linux/ubuntu
+    signed_by: https://download.docker.com/linux/ubuntu/gpg
+    architectures: amd64
+    suites: "{{ ansible_distribution_release }}"
+    components: stable
+  notify:
+    - "docker : Update apt cache"
+
+- name: Update apt cache if Docker repo first time added
+  ansible.builtin.meta: flush_handlers
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-compose-plugin
+      - python3-pip
+      - python3-jsondiff
+      - python3-docker
+
+- name: Make sure required for 'community.docker' collection packages are installed
+  community.general.python_requirements_info:
+    dependencies:
+      - docker>5
