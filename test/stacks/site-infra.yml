@@ -74,6 +74,13 @@
               - /srv/site-infra/traefik/certs:/certs/
             networks:
               - traefiknet
+            deploy:
+              labels:
+                - "traefik.enable=true"
+                - "traefik.http.routers.traefik.rule=Host(`traefik.nkiryanov.com`)"
+                - "traefik.http.routers.traefik.service=api@internal"
+                - "traefik.http.services.traefik.loadbalancer.server.port=80"
+
 
           periodic-prune:
             image: f213/periodic-docker-prune:1.1.1
