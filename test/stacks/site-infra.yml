@@ -4,28 +4,14 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - /srv/site-infra
+    - /srv/site-infra/
     - /srv/site-infra/traefik
-    - /srv/site-infra/traefik/certs
 
-- name: Deploy traefik startup and dynamic configs
-  ansible.builtin.copy:
-    src: "templates/{{ item }}"
-    dest: "/srv/site-infra/traefik/{{ item }}"
-    mode: "0644"
-  loop:
-    - traefik-dynamic-configuration.yml
-
-- name: Deploy Cloudflare origin server cert
-  ansible.builtin.copy:
-    src: "../keys/{{ item.src_name }}"
-    dest: "/srv/site-infra/traefik/certs/{{ item.dst_name }}"
+- name: Make sure acme file is present
+  ansible.builtin.file:
+    path: /srv/site-infra/traefik/acme.json
+    state: touch
     mode: "0600"
-  loop:
-    - src_name: cloudflare-origin-server.cert
-      dst_name: origin-server.cert
-    - src_name: cloudflare-origin-server.key
-      dst_name: origin-server.key
 
 - name: Make sure ingress networks exists
   community.docker.docker_network:
@@ -73,19 +59,24 @@
               - "--providers.swarm.network=traefiknet"
               - "--providers.swarm.refreshseconds=600"
 
-              - "--providers.file=true"
-              - "--providers.file.filename=/traefik-dynamic-configuration.yml"
-              - "--providers.file.watch=true"
-
               - "--entrypoints.websecure.address=:443"
               - "--entrypoints.websecure.asdefault=true"
               - "--entrypoints.websecure.http.tls=true"
+
+              - "--certificatesresolvers.leresolver.acme.email={{ secrets.cloudflare.dns_challenge.email }}"
+              - "--certificatesresolvers.leresolver.acme.dnschallenge=true"
+              - "--certificatesresolvers.leresolver.acme.dnschallenge.provider=cloudflare"
+              - "--certificatesresolvers.leresolver.acme.dnschallenge.delayBeforeCheck=10"
+
+              # Enable test server
+              # - "--certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+            environment:
+              CF_DNS_API_TOKEN: "{{ secrets.cloudflare.dns_challenge.token }}"
             ports:
               - "443:443"
             volumes:
               - /var/run/docker.sock:/var/run/docker.sock:ro
-              - /srv/site-infra/traefik/traefik-dynamic-configuration.yml:/traefik-dynamic-configuration.yml:ro
-              - /srv/site-infra/traefik/certs:/certs/:ro
+              - /srv/site-infra/traefik/acme.json:/acme.json
             networks:
               - traefiknet
             deploy:
@@ -93,8 +84,8 @@
                 - "traefik.enable=true"
                 - "traefik.http.routers.traefik.rule=Host(`traefik.nkiryanov.com`)"
                 - "traefik.http.routers.traefik.service=api@internal"
+                - "traefik.http.routers.traefik.tls.certresolver=leresolver"
                 - "traefik.http.services.traefik.loadbalancer.server.port=80"  # not sure how it is used, but required to be defined in swarm mode
-
 
           periodic-prune:
             image: f213/periodic-docker-prune:1.1.1
