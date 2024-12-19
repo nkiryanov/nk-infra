@@ -14,7 +14,6 @@
     dest: "/srv/site-infra/traefik/{{ item }}"
     mode: "0644"
   loop:
-    - traefik.yml
     - traefik-dynamic-configuration.yml
 
 - name: Deploy Cloudflare origin server cert
@@ -63,15 +62,30 @@
 
           traefik:
             image: traefik:v3.2.1
+            command:
+              - "--log.level=DEBUG"
+              - "--accesslog"
+
+              - "--api=true"
+
+              - "--providers.swarm=true"
+              - "--providers.swarm.exposedbydefault=false"
+              - "--providers.swarm.network=traefiknet"
+              - "--providers.swarm.refreshseconds=600"
+
+              - "--providers.file=true"
+              - "--providers.file.filename=/traefik-dynamic-configuration.yml"
+              - "--providers.file.watch=true"
+
+              - "--entrypoints.websecure.address=:443"
+              - "--entrypoints.websecure.asdefault=true"
+              - "--entrypoints.websecure.http.tls=true"
             ports:
-              - "80:80"
               - "443:443"
-              - "8080:8080"
             volumes:
               - /var/run/docker.sock:/var/run/docker.sock:ro
-              - /srv/site-infra/traefik/traefik.yml:/traefik.yml
-              - /srv/site-infra/traefik/traefik-dynamic-configuration.yml:/traefik-dynamic-configuration.yml
-              - /srv/site-infra/traefik/certs:/certs/
+              - /srv/site-infra/traefik/traefik-dynamic-configuration.yml:/traefik-dynamic-configuration.yml:ro
+              - /srv/site-infra/traefik/certs:/certs/:ro
             networks:
               - traefiknet
             deploy:
@@ -79,7 +93,7 @@
                 - "traefik.enable=true"
                 - "traefik.http.routers.traefik.rule=Host(`traefik.nkiryanov.com`)"
                 - "traefik.http.routers.traefik.service=api@internal"
-                - "traefik.http.services.traefik.loadbalancer.server.port=80"
+                - "traefik.http.services.traefik.loadbalancer.server.port=80"  # not sure how it is used, but required to be defined in swarm mode
 
 
           periodic-prune:
