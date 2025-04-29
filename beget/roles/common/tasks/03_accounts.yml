@@ -1,0 +1,33 @@
+---
+- name: Ensure group "ssh" exists
+  ansible.builtin.group:
+    name: ssh
+    state: present
+
+- name: Add accounts
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    groups:
+      - root
+      - sudo
+      - ssh
+    shell: /bin/bash
+  loop: "{{ ssh_accounts }}"
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Add ssh keys
+  ansible.posix.authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.key }}"
+  loop: "{{ ssh_accounts }}"
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Limit access to only users of _ssh group
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    search_string: AllowGroups
+    line: AllowGroups ssh
+  notify:
+    - Reload sshd

@@ -1,0 +1,9 @@
+---
+- name: Common configuration
+  hosts:
+    - all
+  vars_files:
+    - vars/ssh_accounts.yml
+  roles:
+    - role: common
+      tags: common

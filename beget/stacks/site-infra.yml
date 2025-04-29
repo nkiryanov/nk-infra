@@ -1,0 +1,95 @@
+---
+- name: Make sure stack directory exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /srv/site-infra/
+    - /srv/site-infra/traefik
+
+- name: Make sure acme file is present
+  ansible.builtin.file:
+    path: /srv/site-infra/traefik/acme.json
+    state: touch
+    mode: "0600"
+
+- name: Make sure ingress networks exists
+  community.docker.docker_network:
+    name: "{{ item }}"
+    driver: overlay
+    # https://www.reddit.com/r/portainer/comments/qt1mne/swarm_deployment_woes/
+    driver_options:
+      com.docker.network.driver.mtu: 1450
+  loop:
+    - cloudflarenet
+    - traefiknet
+
+- name: Deploy the site infra stack
+  community.docker.docker_stack:
+    name: site-infra
+    resolve_image: never
+    with_registry_auth: true
+    prune: true
+    compose:
+      - version: "3.8"
+
+        networks:
+          cloudflarenet:
+            external: true
+          traefiknet:
+            external: true
+
+        services:
+          cloudflared:
+            image: cloudflare/cloudflared:2024.11.1
+            command: "tunnel --no-autoupdate run --token {{ secrets.cloudflare.tunnel_token }}"
+            networks:
+              - cloudflarenet
+
+          traefik:
+            image: traefik:v3.2.1
+            command:
+              - "--log.level=DEBUG"
+              - "--accesslog"
+
+              - "--api=true"
+
+              - "--providers.swarm=true"
+              - "--providers.swarm.exposedbydefault=false"
+              - "--providers.swarm.network=traefiknet"
+              - "--providers.swarm.refreshseconds=600"
+
+              - "--entrypoints.websecure.address=:443"
+              - "--entrypoints.websecure.asdefault=true"
+              - "--entrypoints.websecure.http.tls=true"
+
+              - "--certificatesresolvers.leresolver.acme.email={{ secrets.cloudflare.dns_challenge.email }}"
+              - "--certificatesresolvers.leresolver.acme.dnschallenge=true"
+              - "--certificatesresolvers.leresolver.acme.dnschallenge.provider=cloudflare"
+              - "--certificatesresolvers.leresolver.acme.dnschallenge.delayBeforeCheck=10"
+
+              # Enable test server
+              # - "--certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+            environment:
+              CF_DNS_API_TOKEN: "{{ secrets.cloudflare.dns_challenge.token }}"
+            ports:
+              - "443:443"
+            volumes:
+              - /var/run/docker.sock:/var/run/docker.sock:ro
+              - /srv/site-infra/traefik/acme.json:/acme.json
+            networks:
+              - traefiknet
+            deploy:
+              labels:
+                - "traefik.enable=true"
+                - "traefik.http.routers.traefik.rule=Host(`traefik.nkiryanov.com`)"
+                - "traefik.http.routers.traefik.service=api@internal"
+                - "traefik.http.routers.traefik.tls.certresolver=leresolver"
+                - "traefik.http.services.traefik.loadbalancer.server.port=80"  # not sure how it is used, but required to be defined in swarm mode
+
+          periodic-prune:
+            image: f213/periodic-docker-prune:1.1.1
+            deploy:
+              mode: global
+            volumes:
+              - /var/run/docker.sock:/var/run/docker.sock
