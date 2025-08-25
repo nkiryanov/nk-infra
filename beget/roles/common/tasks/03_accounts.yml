@@ -12,7 +12,7 @@
 
 - name: Create groups list to add users to
   ansible.builtin.set_fact:
-    groups_add_to: "{{ wanted_groups | select('in', ansible_facts.getent_group.keys()) | list }}"
+    common_groups: "{{ wanted_groups | select('in', ansible_facts.getent_group.keys()) | list }}"
   vars:
     wanted_groups:
       - root
@@ -23,7 +23,7 @@
 - name: Create user accounts
   ansible.builtin.user:
     name: "{{ item.username }}"
-    groups: "{{ groups_add_to }}"
+    groups: "{{ common_groups }}"
     shell: /bin/bash
   loop: "{{ ssh_accounts }}"
   loop_control:

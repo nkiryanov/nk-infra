@@ -8,12 +8,12 @@
 - name: Get swarm info
   community.docker.docker_swarm_info:
     nodes: true
-  register: swarm
+  register: swarm  # noqa: var-naming[no-role-prefix]
 
 - name: Store join tokens
   ansible.builtin.set_fact:
-    worker_join_token: "{{ swarm.swarm_facts.JoinTokens.Worker }}"
-    manager_join_token: "{{ swarm.swarm_facts.JoinTokens.Manager }}"
+    worker_join_token: "{{ swarm.swarm_facts.JoinTokens.Worker }}"  # noqa: var-naming[no-role-prefix]
+    manager_join_token: "{{ swarm.swarm_facts.JoinTokens.Manager }}"  # noqa: var-naming[no-role-prefix]
 
 - name: Log in to the container registry
   community.docker.docker_login:
