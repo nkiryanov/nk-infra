@@ -1,16 +1,29 @@
 ---
-- name: Ensure group "ssh" exists
+- name: Ensure required groups exists
   ansible.builtin.group:
-    name: ssh
+    name: "{{ item }}"
     state: present
+  loop:
+    - ssh
 
-- name: Add accounts
-  ansible.builtin.user:
-    name: "{{ item.username }}"
-    groups:
+- name: Collect existed groups to ansible facts
+  ansible.builtin.getent:
+    database: group
+
+- name: Create groups list to add users to
+  ansible.builtin.set_fact:
+    groups_add_to: "{{ wanted_groups | select('in', ansible_facts.getent_group.keys()) | list }}"
+  vars:
+    wanted_groups:
       - root
       - sudo
       - ssh
+      - docker
+
+- name: Create user accounts
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    groups: "{{ groups_add_to }}"
     shell: /bin/bash
   loop: "{{ ssh_accounts }}"
   loop_control:

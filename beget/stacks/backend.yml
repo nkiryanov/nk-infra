@@ -6,7 +6,7 @@
     with_registry_auth: true
     prune: true
     compose:
-      - version: "3.8"
+      - version: "3.9"
 
         networks:
           cloudflarenet:

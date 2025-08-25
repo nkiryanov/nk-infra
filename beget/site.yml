@@ -7,3 +7,10 @@
   roles:
     - role: common
       tags: common
+
+- name: Install docker
+  hosts:
+    - all
+  roles:
+    - role: docker
+      tags: docker
