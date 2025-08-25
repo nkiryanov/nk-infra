@@ -1,4 +1,4 @@
-YML_FILES = $(shell find . -type f \( -name "*.yml" -o -name "*.yaml" \) -not -path "./venv/*" -not -path "./.venv/*" -not -path "./mitogen/*")
+YML_FILES = $(shell find . -type f \( -name "*.yml" -o -name "*.yaml" \) -not -path "./venv/*" -not -path "./.venv/*" -not -path "./mitogen/*" -not -path "./.ansible/*")
 
 .PHONY: .uv  ## Check that uv is installed
 .uv:

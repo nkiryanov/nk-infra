@@ -31,7 +31,7 @@
     with_registry_auth: true
     prune: true
     compose:
-      - version: "3.8"
+      - version: "3.9"
 
         networks:
           cloudflarenet:
@@ -41,13 +41,13 @@
 
         services:
           cloudflared:
-            image: cloudflare/cloudflared:2024.11.1
+            image: cloudflare/cloudflared:2025.8.1
             command: "tunnel --no-autoupdate run --token {{ secrets.cloudflare.tunnel_token }}"
             networks:
               - cloudflarenet
 
           traefik:
-            image: traefik:v3.2.1
+            image: traefik:v3.5
             command:
               - "--log.level=DEBUG"
               - "--accesslog"

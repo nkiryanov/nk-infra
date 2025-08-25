@@ -1,5 +1,5 @@
 [project]
-name = "nk-vless"
+name = "nk-infra"
 version = "0.1.0"
 description = "nk vless playbook"
 readme = "README.md"

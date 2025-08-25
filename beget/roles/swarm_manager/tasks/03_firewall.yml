@@ -4,11 +4,11 @@
 - name: Gather Swarm bridge network info
   community.docker.docker_network_info:
     name: docker_gwbridge
-  register: docker_gwbridge_info
+  register: docker_gwbridge_info  # noqa: var-naming[no-role-prefix]
 
 - name: Set Swarm bridge network subnet
   ansible.builtin.set_fact:
-    swarm_bridge_subnet: "{{ docker_gwbridge_info.network.IPAM.Config.0.Subnet }}"
+    swarm_bridge_subnet: "{{ docker_gwbridge_info.network.IPAM.Config.0.Subnet }}"  # noqa: var-naming[no-role-prefix]
 
 - name: Allow all access from swarm subnet
   community.general.ufw:
