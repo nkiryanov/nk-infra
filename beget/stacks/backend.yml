@@ -1,6 +1,6 @@
 ---
 - name: Deploy the backend stack
-  docker_stack:
+  community.docker.docker_stack:
     name: backend
     resolve_image: never
     with_registry_auth: true

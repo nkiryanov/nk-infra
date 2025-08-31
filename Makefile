@@ -20,3 +20,18 @@ lint: lint-yml .uv
 .PHONY:  ## Just to check what .yml files are being linted
 echo:
 	@$(foreach val, $(YML_FILES), echo $(val);)
+
+
+.PHONY: encrypt-secret
+encrypt-secret:
+	ansible-vault encrypt_string 
+
+SECRET_VAR = ""
+SECRETS=@beget/vars/vault.yml
+.PHONY: view-secret
+view-secret:
+	ansible localhost \
+		--inventory="localhost," \
+		--module-name="debug" \
+		--args="var=$(SECRET_VAR)" \
+		--extra-vars="$(SECRETS)"
