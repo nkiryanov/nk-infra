@@ -1,6 +1,6 @@
 ---
-# Allow all access from the Swarm subnet.
-# Necessary for services on the same node and IP as the Swarm manager cause in that case traffic not routed through VM vlan.
+# Allow swarm network access
+# Necessary for services that are running on swarm manager nodes: in that case network traffic not routed throughout private VM vlan
 - name: Gather Swarm bridge network info
   community.docker.docker_network_info:
     name: docker_gwbridge

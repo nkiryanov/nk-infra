@@ -7,10 +7,18 @@
   roles:
     - role: common
       tags: common
-
-- name: Install docker
-  hosts:
-    - all
-  roles:
     - role: docker
       tags: docker
+
+- name: Configure docker swarm
+  hosts:
+    - nk-manager-1
+  vars_files:
+    - vars/secrets.yml
+  vars:
+    stacks:
+      - site-infra
+      - backend
+  roles:
+    - role: swarm
+      tags: swarm

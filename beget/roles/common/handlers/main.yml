@@ -1,5 +1,5 @@
 ---
-- name: Apple netplan
+- name: Apply netplan
   ansible.builtin.command: /usr/sbin/netplan apply  # noqa: no-changed-when
   become: true
 
