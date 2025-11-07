@@ -1,12 +1,6 @@
-YML_FILES = $(shell find . -type f \( -name "*.yml" -o -name "*.yaml" \) -not -path "./venv/*" -not -path "./.venv/*" -not -path "./mitogen/*" -not -path "./.ansible/*")
-
 .PHONY: .uv  ## Check that uv is installed
 .uv:
-	@uv -V || echo 'Please install uv: https://docs.astral.sh/uv/getting-started/installation/'
-
-.PHONY:  ## Just to check what .yml files are being linted
-.yaml-to-lint:
-	@$(foreach val, $(YML_FILES), echo $(val);)
+	@uv --version || echo 'Please install uv: https://docs.astral.sh/uv/getting-started/installation/'
 
 .PHONY: help
 help:
@@ -34,22 +28,37 @@ install: .uv
 	@uv run ansible-galaxy install -r requirements.yml
 
 .PHONY: lint  ## Lint
-lint: .uv
-	uv run yamllint --strict $(YML_FILES) && echo "Yaml linting ok"
-	uv run ansible-lint --format pep8
+lint:
+	uv run yamllint --strict . && echo "Yaml linting ok"
+	uv run ansible-lint --format=pep8
 
-SECRET=""
-NAME="your-secret-name"
-.PHONY: encrypt-secret
 encrypt-secret:
-	ansible-vault encrypt_string --name "$(NAME)" "$(SECRET)"
+ifndef NAME
+	@echo "Error: NAME variable not set"
+	@echo
+	@echo "Usage:"
+	@echo "    make encrypt-secret NAME=secret-name SECRET=your-secret-value"
+else ifndef SECRET
+	@echo "Error: SECRET variable not set"
+	@echo
+	@echo "Usage:"
+	@echo "    make encrypt-secret NAME=secret-name SECRET=your-secret-value"
+else
+	uv run ansible-vault encrypt_string --name="$(NAME)" "$(SECRET)"
+endif
 
-SECRET = ""
-VAULT=@beget/vars/secrets.yml
+VAULT=@vars/secrets.yml
 .PHONY: view-secret
-view-secret: .uv
+view-secret:
+ifndef SECRET
+	@echo "Error: SECRET variable not set"
+	@echo
+	@echo "Usage:"
+	@echo "    make view-secret SECRET=secrets.ghcr.token"
+else
 	uv run ansible localhost \
 		--inventory="localhost," \
 		--module-name="debug" \
 		--args="var=$(SECRET)" \
 		--extra-vars="$(VAULT)"
+endif

@@ -6,4 +6,5 @@
       - acl
       - net-tools
       - vim
+      - ufw
       - fish

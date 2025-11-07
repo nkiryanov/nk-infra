@@ -5,6 +5,7 @@
     state: present
   loop:
     - ssh
+    - docker
 
 - name: Collect existed groups to ansible facts
   ansible.builtin.getent:
@@ -23,7 +24,10 @@
 - name: Create user accounts
   ansible.builtin.user:
     name: "{{ item.username }}"
-    groups: "{{ common_groups }}"
+    groups:
+      - sudo
+      - ssh
+      - docker
     shell: /bin/bash
   loop: "{{ ssh_accounts }}"
   loop_control:

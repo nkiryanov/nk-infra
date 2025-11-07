@@ -5,12 +5,10 @@
     port: 22
     proto: tcp
 
-- name: Allow all access from vlan
+- name: Allow all access from private lan
   community.general.ufw:
     rule: allow
-    src: "{{ item }}"
-  loop:
-    - "{{ vlan }}"
+    src: "{{ private_lan }}"
 
 - name: Deny all
   community.general.ufw:
