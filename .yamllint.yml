@@ -2,10 +2,9 @@
 extends: default
 
 ignore:
-  - venv/
+  - .venv/
+  - .ansible/
   - mitogen/
-  - prod/vars/secrets.yml
-  - test/vars/secrets.yml
 
 rules:
   line-length:
