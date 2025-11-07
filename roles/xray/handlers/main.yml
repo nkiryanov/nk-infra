@@ -1,0 +1,6 @@
+---
+- name: Restart xray server
+  ansible.builtin.systemd:
+    name: xray
+    state: restarted
+    enabled: true

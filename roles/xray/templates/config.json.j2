@@ -1,0 +1,39 @@
+{
+    "inbounds": [
+        {
+            "port": 443,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "flow": "xtls-rprx-vision",
+                        "id": "{{ xray_uuid }}"
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "realitySettings": {
+                    "dest": "www.googletagmanager.com:443",
+                    "privateKey": "{{ xray_reality_private_key }}",
+                    "serverNames": [
+                        "www.googletagmanager.com"
+                    ],
+                    "shortIds": [
+                        "ee8b61f2c1c975f2"
+                    ]
+                },
+                "security": "reality"
+            }
+        }
+    ],
+    "log": {
+        "loglevel": "error"
+    },
+    "outbounds": [
+        {
+            "protocol": "freedom"
+        }
+    ]
+}
