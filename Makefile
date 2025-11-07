@@ -47,7 +47,7 @@ else
 	uv run ansible-vault encrypt_string --name="$(NAME)" "$(SECRET)"
 endif
 
-VAULT=@beget/vars/secrets.yml
+VAULT=@vars/secrets.yml
 .PHONY: view-secret
 view-secret:
 ifndef SECRET
