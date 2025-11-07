@@ -13,7 +13,7 @@
       tags: docker
 
 - name: Xray RUS
-  hosts: nk-router-rus
+  hosts: nk-router-ru
   vars_files:
     - vars/secrets.yml
   roles:
