@@ -17,7 +17,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
 
@@ -28,10 +28,10 @@ jobs:
         run: echo ${{ secrets.ANSIBLE_VAULT_KEY }} > .vault-key
 
       - name: Install ssh keys
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Run the playbook
         run: |
-          uv run ansible-playbook beget/site.yml --inventory beget/hosts.yml --user infra --become
+          uv run ansible-playbook --inventory hosts.yml --user infra --become site.yml

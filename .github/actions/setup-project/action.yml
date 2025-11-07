@@ -7,9 +7,9 @@ runs:
 
   steps:
     - name: Setup uv
-      uses: astral-sh/setup-uv@v6
+      uses: astral-sh/setup-uv@v7
       with:
-        version: '0.8.8'
+        version: '0.9.7'
         enable-cache: true
         cache-dependency-glob: 'uv.lock'
 
@@ -22,7 +22,7 @@ runs:
       id: cache-galaxy-dependencies
       with:
         path: |
-          ~/.ansible
+          ./.ansible
         key: ${{ hashFiles('requirements.yml') }}
 
     # Always run install. It should be fast enough if dependencies are cached
