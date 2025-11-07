@@ -1,0 +1,26 @@
+---
+- name: Check if Xray is installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/xray
+  register: xray_installed
+
+- name: Install Xray
+  when: not xray_installed.stat.exists
+  block:
+    - name: Download Xray install script
+      ansible.builtin.get_url:
+        url: https://github.com/XTLS/Xray-install/raw/main/install-release.sh
+        dest: /tmp/xray-install.sh
+        mode: '0755'
+
+    - name: Run installation script
+      ansible.builtin.command: bash /tmp/xray-install.sh install
+      args:
+        creates: /usr/local/bin/xray
+      when: not xray_installed.stat.exists
+
+    - name: Clean up install script
+      ansible.builtin.file:
+        path: /tmp/xray-install.sh
+        state: absent
+      when: not xray_installed.stat.exists

@@ -1,0 +1,13 @@
+---
+- name: Create Xray config directory
+  ansible.builtin.file:
+    path: /usr/local/etc/xray
+    state: directory
+    mode: '0755'
+
+- name: Deploy Xray configuration
+  ansible.builtin.template:
+    src: templates/config.json.j2
+    dest: /usr/local/etc/xray/config.json
+    mode: '0644'
+  notify: Restart xray server

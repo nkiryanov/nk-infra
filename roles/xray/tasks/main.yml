@@ -1,0 +1,9 @@
+---
+- name: Install xray
+  ansible.builtin.include_tasks: 00_install.yml
+
+- name: Allow https
+  ansible.builtin.include_tasks: 01_firewall.yml
+
+- name: Set xray configuration
+  ansible.builtin.include_tasks: 02_configure.yml

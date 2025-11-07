@@ -11,3 +11,14 @@
       tags: common
     - role: docker
       tags: docker
+
+- name: Xray RUS
+  hosts: nk-router-rus
+  vars_files:
+    - vars/secrets.yml
+  roles:
+    - role: xray
+      tags: xray
+      vars:
+        xray_uuid: "{{ secrets.xray_rus.user.uuid }}"
+        xray_reality_private_key: "{{ secrets.xray_rus.server.private_key }}"
