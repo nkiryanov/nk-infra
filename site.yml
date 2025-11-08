@@ -12,13 +12,22 @@
     - role: docker
       tags: docker
 
-- name: Xray RUS
+- name: Xray RU
   hosts: nk-router-ru
   vars_files:
-    - vars/secrets.yml
+    - xray/ru/secrets.yml
+  vars:
+    config_template: "{{ playbook_dir }}/xray/ru/config.json.j2"
   roles:
     - role: xray
-      tags: xray
-      vars:
-        xray_uuid: "{{ secrets.xray_rus.user.uuid }}"
-        xray_reality_private_key: "{{ secrets.xray_rus.server.private_key }}"
+      tags: ["xray", "ru"]
+
+- name: Xray NL
+  hosts: nk-xray-nl
+  vars_files:
+    - xray/nl/secrets.yml
+  vars:
+    config_template: "{{ playbook_dir }}/xray/nl/config.json.j2"
+  roles:
+    - role: xray
+      tags: ["xray", "nl"]

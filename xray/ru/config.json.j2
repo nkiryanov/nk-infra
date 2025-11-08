@@ -1,4 +1,7 @@
 {
+    "log": {
+        "loglevel": "error"
+    },
     "inbounds": [
         {
             "port": 443,
@@ -7,30 +10,27 @@
                 "clients": [
                     {
                         "flow": "xtls-rprx-vision",
-                        "id": "{{ xray_uuid }}"
+                        "id": "{{ xray_ru.user.uuid }}"
                     }
                 ],
                 "decryption": "none"
             },
             "streamSettings": {
-                "network": "tcp",
+                "network": "raw",
+                "security": "reality",
                 "realitySettings": {
                     "dest": "www.googletagmanager.com:443",
-                    "privateKey": "{{ xray_reality_private_key }}",
+                    "privateKey": "{{ xray_ru.reality.private_key }}",
                     "serverNames": [
                         "www.googletagmanager.com"
                     ],
                     "shortIds": [
-                        "ee8b61f2c1c975f2"
+                        "{{ xray_ru.user.short_id }}"
                     ]
-                },
-                "security": "reality"
+                }
             }
         }
     ],
-    "log": {
-        "loglevel": "error"
-    },
     "outbounds": [
         {
             "protocol": "freedom"
