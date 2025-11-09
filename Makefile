@@ -44,10 +44,10 @@ else ifndef SECRET
 	@echo "Usage:"
 	@echo "    make encrypt-secret NAME=secret-name SECRET=your-secret-value"
 else
-	uv run ansible-vault encrypt_string --name="$(NAME)" "$(SECRET)"
+	@uv run ansible-vault encrypt_string --name="$(NAME)" "$(SECRET)"
 endif
 
-VAULT=@vars/secrets.yml
+VAULT=vars/secrets.yml
 .PHONY: view-secret
 view-secret:
 ifndef SECRET
@@ -60,5 +60,5 @@ else
 		--inventory="localhost," \
 		--module-name="debug" \
 		--args="var=$(SECRET)" \
-		--extra-vars="$(VAULT)"
+		--extra-vars="@$(VAULT)"
 endif
