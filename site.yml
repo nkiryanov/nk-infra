@@ -16,8 +16,10 @@
   hosts: nk-router-ru
   vars_files:
     - xray/ru/secrets.yml
+    - xray/nl/secrets.yml
   vars:
     config_template: "{{ playbook_dir }}/xray/ru/config.json.j2"
+    xray_nl_host: "{{ hostvars['nk-xray-nl']['ansible_host'] }}"
   roles:
     - role: xray
       tags: ["xray", "ru"]
