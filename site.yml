@@ -12,24 +12,24 @@
     - role: docker
       tags: docker
 
-- name: Xray RU
-  hosts: nk-router-ru
+- name: Xray Router
+  hosts: nk-router
   vars_files:
-    - xray/ru/secrets.yml
-    - xray/nl/secrets.yml
+    - xray/router/secrets.yml
+    - xray/freedom/secrets.yml
   vars:
-    config_template: "{{ playbook_dir }}/xray/ru/config.json.j2"
-    xray_nl_host: "{{ hostvars['nk-xray-nl']['ansible_host'] }}"
+    config_template: "{{ playbook_dir }}/xray/router/config.json.j2"
+    xray_freedom_host: "{{ hostvars['nk-freedom']['ansible_host'] }}"
   roles:
     - role: xray
-      tags: ["xray", "ru"]
+      tags: ["xray", "router"]
 
-- name: Xray NL
-  hosts: nk-xray-nl
+- name: Xray Freedom
+  hosts: nk-freedom
   vars_files:
-    - xray/nl/secrets.yml
+    - xray/freedom/secrets.yml
   vars:
-    config_template: "{{ playbook_dir }}/xray/nl/config.json.j2"
+    config_template: "{{ playbook_dir }}/xray/freedom/config.json.j2"
   roles:
     - role: xray
-      tags: ["xray", "nl"]
+      tags: ["xray", "freedom"]

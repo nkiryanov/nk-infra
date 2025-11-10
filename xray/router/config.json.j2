@@ -9,25 +9,25 @@
             "port": 443,
             "protocol": "vless",
             "settings": {
+                "decryption": "none",
                 "clients": [
                     {
                         "flow": "xtls-rprx-vision",
-                        "id": "{{ xray_ru.user.uuid }}"
+                        "id": "{{ xray_router.user.uuid }}"
                     }
-                ],
-                "decryption": "none"
+                ]
             },
             "streamSettings": {
                 "network": "raw",
                 "security": "reality",
                 "realitySettings": {
                     "dest": "www.googletagmanager.com:443",
-                    "privateKey": "{{ xray_ru.reality.private_key }}",
+                    "privateKey": "{{ xray_router.reality.private_key }}",
                     "serverNames": [
                         "www.googletagmanager.com"
                     ],
                     "shortIds": [
-                        "{{ xray_ru.user.short_id }}"
+                        "{{ xray_router.user.short_id }}"
                     ]
                 }
             }
@@ -54,7 +54,7 @@
             {
                 "type": "field",
                 "network": "tcp,udp",
-                "outboundTag": "proxy-nl"
+                "outboundTag": "proxy-freedom"
             }
         ]
     },
@@ -68,31 +68,31 @@
             "protocol": "freedom"
         },
         {
-            "tag": "proxy-nl",
+            "tag": "proxy-freedom",
             "protocol": "vless",
             "settings": {
                 "vnext": [
                     {
-                        "address": "{{ xray_nl_host }}",
+                        "address": "{{ xray_freedom_host }}",
                         "port": 443,
                         "users": [
                             {
-                                "id": "{{ xray_nl.user.uuid }}",
-                                "encryption": "none",
-                                "flow": "xtls-rprx-vision"
+                                "id": "{{ xray_freedom.user.uuid }}",
+                                "flow": "xtls-rprx-vision",
+                                "encryption": "none"
                             }
                         ]
                     }
                 ]
             },
             "streamSettings": {
-                "network": "tcp",
+                "network": "raw",
                 "security": "reality",
                 "realitySettings": {
                     "serverName": "www.googletagmanager.com",
                     "fingerprint": "chrome",
-                    "shortId": "{{ xray_nl.user.short_id }}",
-                    "publicKey": "{{ xray_nl.reality.public_key }}"
+                    "shortId": "{{ xray_freedom.user.short_id }}",
+                    "publicKey": "{{ xray_freedom.reality.public_key }}"
                 }
             }
         }
