@@ -36,6 +36,11 @@
         "rules": [
             {
                 "type": "field",
+                "protocol": ["bittorrent"],
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
                 "domain": ["domain:ru"],
                 "outboundTag": "direct"
             },
@@ -52,6 +57,10 @@
         ]
     },
     "outbounds": [
+        {
+            "tag": "block",
+            "protocol": "blackhole"
+        },
         {
             "tag": "direct",
             "protocol": "freedom"
