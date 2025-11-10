@@ -4,8 +4,6 @@
     - all
   vars_files:
     - vars/ssh_accounts.yml
-  vars:
-    private_lan: 10.16.0.0/16
   roles:
     - role: common
       tags: common

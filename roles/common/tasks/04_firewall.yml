@@ -9,6 +9,7 @@
   community.general.ufw:
     rule: allow
     src: "{{ private_lan }}"
+  when: private_lan is defined
 
 - name: Deny all
   community.general.ufw:
