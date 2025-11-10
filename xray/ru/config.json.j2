@@ -31,9 +31,59 @@
             }
         }
     ],
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "rules": [
+            {
+                "type": "field",
+                "domain": ["domain:ru"],
+                "outboundTag": "direct"
+            },
+            {
+                "type": "field",
+                "ip": ["geoip:ru", "geoip:private"],
+                "outboundTag": "direct"
+            },
+            {
+                "type": "field",
+                "network": "tcp,udp",
+                "outboundTag": "proxy-nl"
+            }
+        ]
+    },
     "outbounds": [
         {
+            "tag": "direct",
             "protocol": "freedom"
+        },
+        {
+            "tag": "proxy-nl",
+            "protocol": "vless",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "{{ xray_nl_host }}",
+                        "port": 443,
+                        "users": [
+                            {
+                                "id": "{{ xray_nl.user.uuid }}",
+                                "encryption": "none",
+                                "flow": "xtls-rprx-vision"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "serverName": "www.googletagmanager.com",
+                    "fingerprint": "chrome",
+                    "shortId": "{{ xray_nl.user.short_id }}",
+                    "publicKey": "{{ xray_nl.reality.public_key }}"
+                }
+            }
         }
     ]
 }
