@@ -62,3 +62,26 @@ else
 		--args="var=$(SECRET)" \
 		--extra-vars="@$(VAULT)"
 endif
+
+
+define GENERATE_SSH_CONFIG
+import yaml
+
+data = yaml.safe_load(open('hosts.yml'))
+lines = []
+
+for host, values in data['all']['hosts'].items():
+    lines.append(f'Host {host}')
+    lines.append(f'    HostName {values["ansible_host"]}')
+    lines.append('')
+
+with open('.ssh-config', 'w') as f:
+    f.write('\n'.join(lines))
+
+endef
+export GENERATE_SSH_CONFIG
+
+.PHONY: ssh-config
+ssh-config:  ## Generate .ssh-config from hosts.yml
+	@uv run python -c "$$GENERATE_SSH_CONFIG"
+	@echo "Generated .ssh-config"
