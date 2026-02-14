@@ -43,17 +43,20 @@
             },
             {
                 "type": "field",
+                "domain": [
+                    "domain:anilibria.tv",
+                    "domain:animori.org"
+                ],
+                "outboundTag": "proxy-freedom"
+            },
+            {
+                "type": "field",
                 "domain": ["domain:ru"],
                 "outboundTag": "direct"
             },
             {
                 "type": "field",
                 "ip": ["geoip:ru", "geoip:private"],
-                "outboundTag": "direct"
-            },
-            {
-                "type": "field",
-                "port": "25,465,587",
                 "outboundTag": "direct"
             },
             {
