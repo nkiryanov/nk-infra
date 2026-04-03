@@ -17,6 +17,10 @@
                     }
                 ]
             },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": ["http", "tls", "quic", "fakedns"]
+            },
             "streamSettings": {
                 "network": "raw",
                 "security": "reality",
@@ -39,19 +43,15 @@
             {
                 "type": "field",
                 "protocol": ["bittorrent"],
-                "outboundTag": "block"
+                "outboundTag": "direct"
             },
             {
                 "type": "field",
                 "domain": [
-                    "domain:anilibria.tv",
-                    "domain:animori.org"
+                    "domain:ru",
+                    "yandex.net",
+                    "emias.info"
                 ],
-                "outboundTag": "proxy-freedom"
-            },
-            {
-                "type": "field",
-                "domain": ["domain:ru"],
                 "outboundTag": "direct"
             },
             {
