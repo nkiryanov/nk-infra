@@ -1,5 +1,5 @@
 ---
-name: Deploy test
+name: deploy
 on:  # yamllint disable-line
   push:
     branches:
